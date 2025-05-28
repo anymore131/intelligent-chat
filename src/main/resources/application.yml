@@ -1,0 +1,65 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: Langchain4j-test
+  mvc:
+    static-path-pattern: /**
+  datasource:
+    url: jdbc:mysql://${mysql.host}:${mysql.port}/${mysql.database}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${mysql.username}
+    password: ${mysql.password}
+  data:
+    redis:
+      host: ${redis.host}
+      port: ${redis.port}
+      password: ${redis.password}
+  servlet:
+    multipart:
+      # 单个文件最大大小
+      max-file-size: 50MB
+      # 所有上传文件最大大小
+      max-request-size: 50MB
+
+mybatis-plus:
+  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 控制台打印SQL（可选）
+    default-enum-type-handler: com.baomidou.mybatisplus.core.handlers.MybatisEnumTypeHandler
+  global-config:
+    db-config:
+      update-strategy: not_null
+      id-type: auto
+  type-aliases-package: cn.edu.zust.se.domain  # 实体类所在包
+  mapper-locations: classpath*:mapper/**/*.xml  # 如果有 XML 文件
+
+pgvector:
+  database: ${postgres.database}
+  host: ${postgres.host}
+  port: ${postgres.port}
+  user: ${postgres.user}
+  password: ${postgres.password}
+  table: ${postgres.table}
+
+web:
+  search:
+    apikey: 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
+
+search:
+  apikey: mb5gQVs7ccvXu2QJy8mhVV6z
+  engine: baidu
+
+logging:
+  level:
+    root: info
+  pattern:
+    dateformat: HH:mm:ss:SSS
+
+jwt:
+  secret: "dGhpcyBpcyBhIHNlY3JldCBrZXkgZm9yIGp3dCB0ZXN0"  # 必须是 Base64 编码的密钥（至少 256 位）
+  expiration: 86400000  # Token 过期时间（单位：毫秒，默认 24 小时）
+
+auth:
+  excludePaths:
+    - /user/login
+    - /user/register

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.RagFileMapper">
+  <select id="adminPageByQuery" parameterType="cn.edu.zust.se.domain.query.RagFileQuery"
+          resultType="cn.edu.zust.se.domain.vo.RagFileVO">
+    select
+        f.id as id,
+        f.rag_id as ragId,
+        r.name as ragName,
+        r.user_id as userId,
+        u.user_name as userName,
+        f.file_name as fileName,
+        f.file_content as fileContent,
+        f.create_time as createTime
+    from rag_file f
+    left join user_rag r on f.rag_id = r.id
+         left join user u on r.user_id = u.id
+    <where>
+      <if test="query.ragId != null">
+        and f.rag_id = #{query.ragId}
+      </if>
+      <if test="query.fileName != null and query.fileName != ''">
+        and f.file_name like concat('%', #{query.fileName}, '%')
+      </if>
+      <if test="query.path != null and query.path != ''">
+        and f.file_content like concat('%', #{query.path}, '%')
+      </if>
+      <if test="query.startCreateTime != null">
+        and f.create_time &gt;= #{query.startCreateTime}
+      </if>
+      <if test="query.endCreateTime != null">
+        and f.create_time &lt;= #{query.endCreateTime}
+      </if>
+    </where>
+    order by f.create_time desc
+  </select>
+</mapper>

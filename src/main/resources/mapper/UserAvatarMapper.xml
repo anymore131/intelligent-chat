@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.UserAvatarMapper">
+  <select id="adminPageByQuery" parameterType="cn.edu.zust.se.domain.query.AvatarFileQuery"
+          resultType="cn.edu.zust.se.domain.vo.AvatarFileVO">
+    select
+        a.id as id,
+        a.user_id as userId,
+        u.user_name as userName,
+        a.avatar as path,
+        a.status as status,
+        a.create_time as createTime,
+        a.update_time as updateTime
+    from user_avatar a
+    left join user u on a.user_id = u.id
+    <where>
+      <if test="query.userId != null">
+        and a.user_id = #{query.userId}
+      </if>
+      <if test="query.status != null">
+        and a.status = #{query.status}
+      </if>
+      <if test="query.path != null">
+        and a.avatar like concat('%', #{query.path}, '%')
+      </if>
+      <if test="query.startCreateTime != null">
+        and a.create_time &gt;= #{query.startCreateTime}
+      </if>
+      <if test="query.endCreateTime != null">
+        and a.create_time &lt;= #{query.endCreateTime}
+      </if>
+    </where>
+    order by a.create_time desc
+  </select>
+</mapper>

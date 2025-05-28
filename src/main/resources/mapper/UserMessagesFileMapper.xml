@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.UserMessagesFileMapper">
+
+  <select id="adminPageByQuery" parameterType="cn.edu.zust.se.domain.query.MessageFileQuery"
+          resultType="cn.edu.zust.se.domain.vo.MessageFileVO">
+    select
+        f.id as id,
+        f.user_id as userId,
+        u.user_name as userName,
+        f.file_name as fileName,
+        f.file_path as filePath,
+        f.create_time as createTime
+    from user_messages_file f
+    join user u on f.user_id = u.id
+    <where>
+      <if test="query.userId != null">
+        and f.user_id = #{query.userId}
+      </if>
+      <if test="query.fileName != null">
+        and f.file_name like concat('%',#{fileName},'%')
+      </if>
+      <if test="query.path != null">
+        and f.file_path like concat('%',#{path},'%')
+      </if>
+      <if test="query.startCreateTime != null">
+        and f.create_time &gt;= #{query.startCreateTime}
+      </if>
+      <if test="query.endCreateTime != null">
+        and f.create_time &lt;= #{query.endCreateTime}
+      </if>
+    </where>
+    order by f.create_time desc
+  </select>
+</mapper>

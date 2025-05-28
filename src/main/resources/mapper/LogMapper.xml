@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.LogMapper">
+  <select id="pageByQuery" parameterType="cn.edu.zust.se.domain.query.LogQuery"
+          resultType="cn.edu.zust.se.domain.vo.LogVO">
+    select
+        l.id,
+        module,
+        user_id as userId,
+        user_name as userName,
+        operation_type as operationType,
+        class_name as className,
+        method_name as methodName,
+        method_params as methodParams,
+        return_value as returnValue,
+        error_message as errorMessage,
+        operation_ip as operationIp,
+        l.create_time as createTime,
+        execution_time as executionTime
+    from log l
+    left join user u on l.user_id = u.id
+    <where>
+      <if test="query.module != null">
+        and l.module = #{query.module}
+      </if>
+      <if test="query.userId != null">
+        and l.user_id = #{query.userId}
+      </if>
+      <if test="query.operationType != null">
+        and l.operation_type = #{query.operationType}
+      </if>
+      <if test="query.className != null">
+        and l.class_name = #{query.className}
+      </if>
+      <if test="query.error == 1">
+        and l.error_message IS NOT NULL
+      </if>
+      <if test="query.error == 0">
+        and l.error_message IS NULL
+      </if>
+      <if test="query.startCreateTime != null">
+        and l.create_time &gt;= #{query.startCreateTime}
+      </if>
+      <if test="query.endCreateTime != null">
+        and l.create_time &lt;= #{query.endCreateTime}
+      </if>
+      <if test="query.minExecutionTime != null">
+        and l.execution_time &gt;= #{query.minExecutionTime}
+      </if>
+    </where>
+    order by
+    <choose>
+      <when test="query.sortBy != null and query.sortBy != ''">
+        <choose>
+          <when test="query.sortBy == 'create_time'">
+            l.create_time
+          </when>
+          <otherwise>
+            ${query.sortBy}
+          </otherwise>
+        </choose>
+        <choose>
+          <when test="query.isAsc != null and query.isAsc == true">
+            ASC
+          </when>
+          <otherwise>
+            DESC
+          </otherwise>
+        </choose>
+      </when>
+      <otherwise>
+        COALESCE(l.create_time) DESC  <!-- 默认排序 -->
+      </otherwise>
+    </choose>
+  </select>
+</mapper>

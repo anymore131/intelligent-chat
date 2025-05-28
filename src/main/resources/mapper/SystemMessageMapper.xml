@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.SystemMessageMapper">
+  <select id="pageByQuery" parameterType="cn.edu.zust.se.domain.query.SystemMessageQuery"
+          resultType="cn.edu.zust.se.domain.vo.SystemMessageVO">
+    select
+        s.id as id,
+        s.user_id as userId,
+        u.user_name as userName,
+        s.name as name,
+        s.description as description,
+        s.access_policy as accessPolicy,
+        s.used_number as usedNumber,
+        s.create_time as createTime
+    from system_message s
+    left join user u on s.user_id = u.id
+    <where>
+        <if test="query.userId != null">
+            and s.user_id = #{query.userId}
+        </if>
+        <if test="query.name != null">
+            and s.name like concat('%', #{query.name}, '%')
+        </if>
+        <if test="query.description != null">
+            and s.description like concat('%', #{query.description},'%')
+        </if>
+        <if test="query.accessPolicy != null">
+            and s.access_policy = #{query.accessPolicy}
+        </if>
+        <if test="query.usedNumber != null">
+            and s.used_number &gt;= #{query.usedNumber}
+        </if>
+        <if test="query.startCreateTime != null">
+            and s.create_time &gt;= #{query.startCreateTime}
+        </if>
+        <if test="query.endCreateTime != null">
+            and s.create_time &lt;= #{query.endCreateTime}
+        </if>
+    </where>
+    order by
+    <choose>
+      <when test="query.sortBy != null and query.sortBy != ''">
+        ${query.sortBy}
+        <choose>
+          <when test="query.isAsc != null and query.isAsc == true">
+            ASC
+          </when>
+          <otherwise>
+            DESC
+          </otherwise>
+        </choose>
+      </when>
+      <otherwise>
+        COALESCE(s.create_time) DESC
+      </otherwise>
+    </choose>
+  </select>
+</mapper>

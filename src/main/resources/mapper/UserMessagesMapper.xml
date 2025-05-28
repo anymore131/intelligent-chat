@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.UserMessagesMapper">
+  <select id="pageByQuery" parameterType="cn.edu.zust.se.domain.query.MessageQuery"
+          resultType="cn.edu.zust.se.domain.po.UserMessages" >
+    select
+      id,
+      sender_id as senderId,
+      receiver_id as receiverId,
+      content,
+      content_type as contentType,
+      create_time as createTime
+    from user_messages
+    <where>
+        ((sender_id = #{query.senderId} AND receiver_id = #{query.receiverId})
+        OR
+        (sender_id = #{query.receiverId} AND receiver_id = #{query.senderId}))
+      <if test="query.lastId != null">
+        and id &lt; #{query.lastId}
+      </if>
+    </where>
+    order by id desc
+  </select>
+  <select id="pageByTotalQuery" parameterType="cn.edu.zust.se.domain.query.TotalMessageQuery"
+          resultType="cn.edu.zust.se.domain.vo.UserMessagesVO">
+    select
+        m.id,
+        m.sender_id as senderId,
+        u1.user_name as senderName,
+        m.receiver_id as receiverId,
+        u2.user_name as receiverName,
+        m.content,
+        m.content_type as contentType,
+        m.create_time as createTime
+    from user_messages m
+    left join user u1 on m.sender_id = u1.id
+    left join user u2 on m.receiver_id = u2.id
+    <where>
+      <if test="query.senderId != null and query.senderId.length > 0">
+        and m.sender_id in
+        <foreach collection="query.senderId" item="id" open="(" separator="," close=")">
+          #{id}
+        </foreach>
+      </if>
+      <if test="query.receiverId != null and query.receiverId.length > 0">
+        and m.receiver_id in
+        <foreach collection="query.receiverId" item="id" open="(" separator="," close=")">
+          #{id}
+        </foreach>
+      </if>
+      <if test="query.content != null">
+        and m.content like concat('%', #{query.content}, '%')
+      </if>
+      <if test="query.contentType != null and query.contentType.length > 0">
+        and m.content_type in
+        <foreach collection="query.contentType" item="contentType" open="(" separator="," close=")">
+          #{contentType}
+        </foreach>
+      </if>
+      <if test="query.startTime != null">
+        and m.create_time &gt;= #{query.startTime}
+      </if>
+      <if test="query.endTime != null">
+        and m.create_time &lt;= #{query.endTime}
+      </if>
+    </where>
+    order by m.id desc
+  </select>
+</mapper>

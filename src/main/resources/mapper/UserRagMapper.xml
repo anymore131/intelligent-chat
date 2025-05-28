@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.UserRagMapper">
+
+  <select id="pageByQuery" parameterType="cn.edu.zust.se.domain.query.UserRagQuery"
+          resultType="cn.edu.zust.se.domain.vo.UserRagVO">
+    select
+        r.id,
+        r.user_id as userId,
+        u.name as userName,
+        r.name,
+        r.create_time as createTime
+    from user_rag r
+    left join user u on r.user_id = u.id
+    <where>
+      <if test="query.userId != null">
+        and r.user_id = #{query.userId}
+      </if>
+      <if test="query.name != null">
+        and r.name like concat('%', #{query.name}, '%')
+      </if>
+      <if test="query.startCreateTime != null">
+        and r.create_time &gt;= #{query.startCreateTime}
+      </if>
+      <if test="query.endCreateTime != null">
+        and r.create_time &lt;= #{query.endCreateTime}
+      </if>
+    </where>
+    order by
+    <choose>
+      <when test="query.sortBy != null and query.sortBy != ''">
+        ${query.sortBy}
+        <choose>
+          <when test="query.isAsc != null and query.isAsc == true">
+            ASC
+          </when>
+          <otherwise>
+            DESC
+          </otherwise>
+        </choose>
+      </when>
+      <otherwise>
+        COALESCE(r.create_time) DESC
+      </otherwise>
+    </choose>
+  </select>
+</mapper>

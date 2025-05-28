@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: Langchain4j-test
+
+mysql:
+  host: 127.0.0.1 # 修改为你自己的虚拟机IP地址
+  password: 0408 # 修改为docker中的MySQL密码
+  port: 13306
+  username: root
+  database: ai-test
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: 0408
+
+postgres:
+  database: postgres
+  host: 127.0.0.1
+  port: 5432
+  user: postgres
+  password: postgres
+  table: embeddings
+
+minio:
+  endpoint: http://47.99.150.135:9000 #Minio服务所在地址
+  bucketName: ai-test #存储桶名称
+  accessKey: minioadmin #访问的key
+  secretKey: minioadmin #访问的秘钥

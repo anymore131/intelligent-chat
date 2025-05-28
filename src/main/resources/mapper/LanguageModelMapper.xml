@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.zust.se.mapper.LanguageModelMapper">
+  <select id="pageByQuery" parameterType="cn.edu.zust.se.domain.query.LanguageModelQuery"
+          resultType="cn.edu.zust.se.domain.vo.LanguageVO">
+    select
+        m.id as id,
+        p.id as platformId,
+        m.model_name as modelName,
+        m.type as type,
+        m.used as used,
+        p.platform_name as platformName,
+        p.user_id as userId,
+        p.platform as platform,
+        p.api_address as apiAddress,
+        m.create_time as createTime,
+        m.update_time as updateTime
+    from language_model m
+    inner join language_platform p on m.platform_id = p.id
+    <where>
+      <if test="query.platformId != null">
+        and p.id = #{query.platformId}
+      </if>
+      <if test="query.userId != null">
+        and p.user_id = #{query.userId}
+      </if>
+      <if test="query.type != null">
+        and m.type = #{query.type}
+      </if>
+      <if test="query.modelName != null">
+        and m.model_name like concat('%', #{query.modelName}, '%')
+      </if>
+      <if test="query.platformName != null">
+        and p.platform_name like concat('%', #{query.platformName}, '%')
+      </if>
+      <if test="query.used != null">
+        and m.used = #{query.used}
+      </if>
+    </where>
+    order by
+    <choose>
+      <when test="query.sortBy != null and query.sortBy != ''">
+        ${query.sortBy}
+        <choose>
+          <when test="query.isAsc != null and query.isAsc == true">
+            ASC
+          </when>
+          <otherwise>
+            DESC
+          </otherwise>
+        </choose>
+      </when>
+      <otherwise>
+        COALESCE(m.update_time, m.create_time) DESC
+      </otherwise>
+    </choose>
+  </select>
+  <select id="getUsedModel" resultType="cn.edu.zust.se.domain.dto.LanguageModelDTO">
+    select
+    m.id as id,
+    m.model_name as modelName,
+    p.platform as platform,
+    p.platform_name as platformName
+    from language_model m
+    inner join language_platform p on m.platform_id = p.id
+    where m.used = 1
+  </select>
+</mapper>
