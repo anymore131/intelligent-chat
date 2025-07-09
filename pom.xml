@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cn.edu.zust.se</groupId>
-	<artifactId>langchain4j-chat</artifactId>
+	<artifactId>intelligent-chat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>langchain4j-chat</name>
-	<description>langchain4j-chat</description>
+	<name>intelligent-chat</name>
+	<description>intelligent-chat</description>
 
 	<properties>
 		<java.version>17</java.version>

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Langchain4j-test # 服务名称
+    name: intelligent-chat # 服务名称
   profiles:
     active: dev
   cloud:

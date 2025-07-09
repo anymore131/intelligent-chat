@@ -1,6 +1,8 @@
+server:
+  port: 8080
 spring:
   application:
-    name: Langchain4j-test
+    name: intelligent-chat
 
 mysql:
   host: 127.0.0.1 # 修改为你自己的虚拟机IP地址

@@ -8,8 +8,8 @@ import org.springframework.cache.annotation.EnableCaching;
 @SpringBootApplication
 @EnableCaching
 @MapperScan("cn.edu.zust.se.mapper")
-public class Langchain4jTestApplication {
+public class IntelligentChatApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(Langchain4jTestApplication.class, args);
+		SpringApplication.run(IntelligentChatApplication.class, args);
 	}
 }
